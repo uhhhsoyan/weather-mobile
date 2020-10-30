@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Pressable, Image, Dimensions } from 'react-native';
 import { MaterialIcons, FontAwesome, AntDesign } from '@expo/vector-icons';
 import SearchModal from '../components/SearchModal';
+import { renderDate, renderWeatherIcon } from '../helpers';
 
 const windowHeight = Dimensions.get('window').height;
-const DAYS_OF_WEEK = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-const WeatherToday = ({ location, updateLocation, weatherToday, windowHeight }) => {
+const WeatherToday = ({ location, updateLocation, weatherToday }) => {
     const [showSearch, setShowSearch] = useState(false);
 
     const launchSearch = () => {
@@ -16,36 +15,6 @@ const WeatherToday = ({ location, updateLocation, weatherToday, windowHeight }) 
 
     const launchGeoLocate = () => {
         console.log('Launch geolocation was clicked')
-    }
-
-    const renderWeatherIcon = () => {
-        switch (weatherToday.weather_state_abbr) {
-            case 'sn':
-                return <Image style={styles.weatherIcon} source={require('../assets/icons/Snow.png')} />
-            case 'sl':
-                return <Image style={styles.weatherIcon} source={require('../assets/icons/Sleet.png')} />
-            case 'h':
-                return <Image style={styles.weatherIcon} source={require('../assets/icons/Hail.png')} />
-            case 't':
-                return <Image style={styles.weatherIcon} source={require('../assets/icons/Thunderstorm.png')} />
-            case 'hr':
-                return <Image style={styles.weatherIcon} source={require('../assets/icons/HeavyRain.png')} />
-            case 'lr':
-                return <Image style={styles.weatherIcon} source={require('../assets/icons/LightRain.png')} /> 
-            case 's':
-                return <Image style={styles.weatherIcon} source={require('../assets/icons/Shower.png')} />
-            case 'hc':
-                return <Image style={styles.weatherIcon} source={require('../assets/icons/HeavyCloud.png')} />
-            case 'lc':
-                return <Image style={styles.weatherIcon} source={require('../assets/icons/LightCloud.png')} />    
-            default:
-                return <Image style={styles.weatherIcon} source={require('../assets/icons/Clear.png')} />
-        }
-    };
-
-    const renderDate = () => {
-        var d = new Date();
-        return `Today  -  ${DAYS_OF_WEEK[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]}`
     }
     
     return (
@@ -64,7 +33,7 @@ const WeatherToday = ({ location, updateLocation, weatherToday, windowHeight }) 
                     <MaterialIcons name="gps-fixed" size={24} color="white" />
                 </Pressable>
             </View>
-            {renderWeatherIcon()}
+            {renderWeatherIcon(weatherToday.weather_state_abbr)}
             <Text style={styles.textTemp}>
                 <Text style={styles.textTempNum}>{Math.round(weatherToday.the_temp)}</Text>
                 <Text style={styles.textTempDeg}>&deg;C</Text>
@@ -73,7 +42,7 @@ const WeatherToday = ({ location, updateLocation, weatherToday, windowHeight }) 
                 {weatherToday.weather_state_name}
             </Text>
             <Text style={styles.textDate}>
-                {renderDate()}
+                {`Today - ${renderDate()}`}
             </Text>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Text><MaterialIcons name="location-on" size={32} color="#88869D" /></Text>
@@ -138,10 +107,6 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 5,
-    },
-    weatherIcon: {
-        height: 175,
-        width: 175,
     },
     textTemp: {
         fontFamily: 'Raleway_400Regular',
